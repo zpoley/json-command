@@ -1,0 +1,112 @@
+.\" Process this file with
+.\" groff -man -Tascii json.man
+.\"
+.TH JSON 1 "OCTOBER 2010" JSON
+.SH NAME
+json \- json processing command toolkit
+.SH SYNOPSIS
+.B json [options] [output fields]
+.B ...
+.SH DESCRIPTION
+.B
+.\"json processes the named input files (or standard input if no files are named) 
+.\"and parses json objects. json handles a number of 
+.\"different standard input formats. 
+json processes standard input and parses json objects. json currently handles a few 
+different standard input formats and provides a number of options tailored to 
+inspecting and transforming the parsed json objects.
+.\"all files are processed in the order specified.
+.SH OPTIONS
+.\".IP -f
+.\"file or glob to process as input.
+.IP -u
+print "ugly" json output, the default is pretty printed json. 
+"ugly" output prints each output object on a single line.
+.IP -d
+print debugging output including exception messages.
+.IP "-o object.path"
+specify the json path to a field in each object to be internally iterated on 
+and treated as the object in which output fields are found.
+.IP "new.key=old_key.in_object"
+specify a new location for an existing value to be output in the final object.
+.IP "-c javascript conditional"
+specify a conditional that determines whether an object is printed.
+.IP "-C"
+print the output fields as tab delimited columns in the order specified.
+.IP "-e \"javascript expression\""
+execute arbitrary javascript within the context of each object. this allows for 
+transforming object data among other things.
+\.".IP -k
+\."print all keys of the first parsed object.
+.SH FIELDS
+.B
+any number of fields can be specified to be printed from each json object.
+by default the structure of the original json object is maintained, however options
+like -e and foo=bar allow for transforming object structure.
+.SH STANDARD INPUT FORMATS
+.P
+(1) line delimited json objects.
+.P
+(2) back to back json objects. e.g. { obj1 : body }{ obj2 : body }
+.P
+(3) file separated json objects.
+.P
+see examples.
+.SH EXAMPLES
+.B
+following examples display the function of the json command for inspecting 
+and transforming json data.
+.P
+(1) curl http://search.twitter.com/search.json?q=node.js
+.P
+(2) curl http://search.twitter.com/search.json?q=node.js | json
+.P
+(3) curl http://search.twitter.com/search.json?q=node.js | 
+.IP
+json -o results
+.P
+(4) curl http://search.twitter.com/search.json?q=node.js | 
+.IP
+json -o results -u
+.P
+(5) curl http://search.twitter.com/search.json?q=node.js | 
+.IP
+json -o results from_user metadata
+.P
+(6) curl http://search.twitter.com/search.json?q=node.js | 
+.IP
+json -o results new_id=id
+.P
+(7) curl http://search.twitter.com/search.json?q=node.js | 
+.IP
+json -o results -C from_user from_user_id
+.P
+(8) curl http://stream.twitter.com/1/statuses/sample.json
+.IP
+-uAnyTwitterUser:Password 2> /dev/null |
+.IP
+json -o user.name user.id
+.SH ORDER OF OPERATIONS
+.P
+(1) objects are parsed from stdin.
+.P
+(2) any non-existing requested keys are instantiated.
+.P
+(3) conditionals are checked against the object. the object is discarded if 
+conditionals do not pass. 
+.P
+(4) key transforms are applied to the object. e.g. new_id=id.
+.P
+(5) expressions are run against the object.
+.P
+(6) the requested keys are pulled from the object and output.
+.SH LIMITATIONS
+.P
+all input is handled through standard in.  
+.P
+the current version is not particularly slow, but is NOT optimized for 
+speed in any way.
+.SH BUGS
+Email bug reports to zpoley@gmail.com.
+.SH AUTHOR
+Zachary Poley <zpoley at gmail dot com>
