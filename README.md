@@ -17,7 +17,7 @@ you need node v0.2.0 or higher and npm to run this program.
 
     npm install json-command
 
-includes json executable.
+installs json shell command.
 
 ## Examples
 
