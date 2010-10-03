@@ -4,7 +4,7 @@ JSON command line processing toolkit.
 
 no more writing code to inspect or transform JSON objects.
 
-this npm module includes a "json" command. the json command processes standard 
+this npm module includes a json shell command. the json command processes standard 
 input and parses json objects. json currently handles a few different standard 
 input formats and provides a number of options tailored toward inspecting and 
 transforming the parsed json objects.
@@ -17,12 +17,14 @@ you need node v0.2.0 or higher and npm to run this program.
 
     npm install json-command
 
+includes json executable.
+
 ## Examples
 
 the following examples parse json output from twitter http requests and output the 
 requested json fields.
 
-please note that the last example requires you to enter your username and password.
+please note that the last two examples require you to enter your username and password.
 
     curl http://search.twitter.com/search.json?q=node.js
 
@@ -38,6 +40,8 @@ please note that the last example requires you to enter your username and passwo
 
     curl http://stream.twitter.com/1/statuses/sample.json -uAnyTwitterUser:Password 2> /dev/null | json user.name user.id
 
+    curl http://stream.twitter.com/1/statuses/sample.json -uAnyTwitterUser:Password 2> /dev/null | json user.name user.id -c "entities.user_mentions.length > 0"
+
 ## Synopsis
 
     json [options] [fields]
@@ -52,11 +56,11 @@ please note that the last example requires you to enter your username and passwo
 
     new.key=old_key       move old_key to new.key in output object
 
-    -c "js conditional"   specify a conditional that determines whether an object is printed
+    -c "js conditional"   js conditional to be run in the context of each object that determines whether an object is printed
 
-    -C                    print the output fields as tab delimited columns in the order specified
+    -C                    print the output fields as tab delimited columns in the order specified by fields
 
-    -e "js expression"    execute arbitrary js within the context of each object.
+    -e "js expression"    execute arbitrary js in the context of each object.
 
 ## Fields
 
