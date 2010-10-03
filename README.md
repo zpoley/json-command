@@ -2,7 +2,7 @@
 
 JSON command line processing toolkit. 
 
-No more writing code to inspect or transform JSON objects.
+no more writing code to inspect or transform JSON objects.
 
 this npm module includes a "json" command. the json command processes standard 
 input and parses json objects. json currently handles a few different standard 
@@ -99,11 +99,11 @@ the npm package includes a man page that can be accessed using:
 
 ## Known Issues
 
-This is alpha quality code, so use at your own risk.
+this is alpha quality code, so use at your own risk.
 
 ## Thanks
 
-This project respectfully uses code from and thanks the authors of:
+this project respectfully uses code from and thanks the authors of:
 
 * [node](http://github.com/ry/node) 
 
