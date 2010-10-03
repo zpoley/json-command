@@ -78,11 +78,11 @@ like -e and foo=bar allow for transforming object structure.
 
 2. any non-existing requested keys are instantiated
 
-3. conditionals are checked against the object. the object is discarded if conditionals do not pass
+3. key transforms are applied to the object
 
-4. key transforms are applied to the object
+4. expressions are run against the object
 
-5. expressions are run against the object
+5. conditionals are checked against the object. the object is discarded if conditionals do not pass
 
 6. the requested keys are pulled from the object and output
 
