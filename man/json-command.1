@@ -19,6 +19,8 @@ inspecting and transforming the parsed json objects.
 .SH OPTIONS
 .\".IP -f
 .\"file or glob to process as input.
+.IP -h
+print help info and exit. 
 .IP -u
 print ugly json output, each object on a single line. 
 .IP -d
@@ -31,7 +33,7 @@ specify a new location for an existing value to be output in the final object.
 specify a conditional that determines whether an object is printed.
 .IP "-C"
 print the output fields as tab delimited columns in the order specified.
-.IP "-e \"js expression\""
+.IP "-e js expression"
 execute arbitrary javascript within the context of each object.
 \.".IP -k
 \."print all keys of the first parsed object.
