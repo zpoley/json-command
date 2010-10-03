@@ -20,22 +20,19 @@ inspecting and transforming the parsed json objects.
 .\".IP -f
 .\"file or glob to process as input.
 .IP -u
-print "ugly" json output, the default is pretty printed json. 
-"ugly" output prints each output object on a single line.
+print ugly json output, each object on a single line. 
 .IP -d
 print debugging output including exception messages.
 .IP "-o object.path"
-specify the json path to a field in each object to be internally iterated on 
-and treated as the object in which output fields are found.
+specify the path to an array to be iterated on.
 .IP "new.key=old_key.in_object"
 specify a new location for an existing value to be output in the final object.
-.IP "-c javascript conditional"
+.IP "-c js conditional"
 specify a conditional that determines whether an object is printed.
 .IP "-C"
 print the output fields as tab delimited columns in the order specified.
-.IP "-e \"javascript expression\""
-execute arbitrary javascript within the context of each object. this allows for 
-transforming object data among other things.
+.IP "-e \"js expression\""
+execute arbitrary javascript within the context of each object.
 \.".IP -k
 \."print all keys of the first parsed object.
 .SH FIELDS
@@ -59,33 +56,29 @@ and transforming json data.
 .P
 (1) curl http://search.twitter.com/search.json?q=node.js
 .P
-(2) curl http://search.twitter.com/search.json?q=node.js | json
+(2) curl http://search.twitter.com/search.json?q=node.js 2> /dev/null | json
 .P
-(3) curl http://search.twitter.com/search.json?q=node.js | 
+(3) curl http://search.twitter.com/search.json?q=node.js 2> /dev/null | 
 .IP
 json -o results
 .P
-(4) curl http://search.twitter.com/search.json?q=node.js | 
-.IP
-json -o results -u
-.P
-(5) curl http://search.twitter.com/search.json?q=node.js | 
+(4) curl http://search.twitter.com/search.json?q=node.js 2> /dev/null | 
 .IP
 json -o results from_user metadata
 .P
-(6) curl http://search.twitter.com/search.json?q=node.js | 
+(5) curl http://search.twitter.com/search.json?q=node.js 2> /dev/null | 
 .IP
 json -o results new_id=id
 .P
-(7) curl http://search.twitter.com/search.json?q=node.js | 
+(6) curl http://search.twitter.com/search.json?q=node.js 2> /dev/null | 
 .IP
 json -o results -C from_user from_user_id
 .P
-(8) curl http://stream.twitter.com/1/statuses/sample.json
+(7) curl http://stream.twitter.com/1/statuses/sample.json 
 .IP
 -uAnyTwitterUser:Password 2> /dev/null |
 .IP
-json -o user.name user.id
+json user.name user.id
 .SH ORDER OF OPERATIONS
 .P
 (1) objects are parsed from stdin.
