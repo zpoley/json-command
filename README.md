@@ -1,22 +1,26 @@
 # JSON Command
 
-JSON command line processing command toolkit
+JSON command line processing toolkit. 
+
+No more writing code to inspect or transform JSON objects.
+
+this npm module includes a "json" command. the json command processes standard 
+input and parses json objects. json currently handles a few different standard 
+input formats and provides a number of options tailored toward inspecting and 
+transforming the parsed json objects.
 
 ## IMPORTANT
 
-you need node v0.2.0 or higher to run this program.
+you need node v0.2.0 or higher and npm to run this program.
 
 ## Installation
 
     npm install json-command
 
-## Description
-
-json processes standard input and parses json objects. json currently handles a few 
-different standard input formats and provides a number of options tailored to 
-inspecting and transforming the parsed json objects.
-
 ## Examples
+
+the following examples parse json output from twitter http requests and output the 
+requested json fields.
 
 please note that the last example requires you to enter your username and password.
 
