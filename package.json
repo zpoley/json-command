@@ -5,9 +5,9 @@
 , "author": "Zachary Poley <zpoley@gmail.com> (http://zpoley.net)"
 , "keywords" : [ "json", "command", "shell" ]
 , "man" : "./man/json-command.1"
-, "repository": 
+, "repository":
   { "type" : "git"
-  , "url" : "http://github.com/zpoley/json.git"
+  , "url" : "https://github.com/zpoley/json-command.git"
   }
 , "bin" : { "json" : "./bin/json.js" }
 }
