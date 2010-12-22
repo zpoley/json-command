@@ -1,8 +1,9 @@
 { "name": "json-command"
-, "version": "0.0.4"
+, "version": "0.0.5"
 , "engines": [ "node >=0.2.0" ]
 , "description": "JSON command line processing toolkit."
 , "author": "Zachary Poley <zpoley@gmail.com> (http://zpoley.net)"
+, "contributors": [ "Isaac Schlueter <i@izs.me> (http://blog.izs.me)" ]
 , "keywords" : [ "json", "command", "shell" ]
 , "man" : "./man/json-command.1"
 , "repository":

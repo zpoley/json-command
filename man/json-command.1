@@ -35,6 +35,10 @@ specify a conditional that determines whether an object is printed.
 print the output fields as tab delimited columns in the order specified.
 .IP "-e js expression"
 execute arbitrary javascript within the context of each object.
+.IP "-i"
+use node's sys.inspect instead of JSON.stringify.
+.IP "-H"
+print headers, if they are supplied. Useful for output from curl -i.
 \.".IP -k
 \."print all keys of the first parsed object.
 .SH FIELDS

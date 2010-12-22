@@ -64,6 +64,11 @@ please note that the last two examples require you to enter your username and pa
 
     -e "js expression"    execute arbitrary js in the context of each object.
 
+    -i                    use node's sys.inspect instead of JSON.stringify.
+
+    -H                    print headers, if they are supplied. Useful for output from curl -i.
+
+
 ## Fields
 
 any number of fields can be specified to be printed from each json object.
