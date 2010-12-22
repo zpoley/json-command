@@ -117,6 +117,7 @@ this is alpha quality code, so use at your own risk.
 this project respectfully uses code from and thanks the authors of:
 
 * [node](http://github.com/ry/node) 
+* [npm](http://npmjs.org/) 
 
 
 
