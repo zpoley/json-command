@@ -15,7 +15,7 @@ you need node v0.2.0 or higher and npm to run this program.
 
 ## Installation
 
-    npm install json-command
+    npm install json
 
 installs json shell command.
 
@@ -106,7 +106,7 @@ like -e and foo=bar allow for transforming object structure.
 
 the npm package includes a man page that can be accessed using:
 
-    man json-command
+    man json
 
 ## Known Issues
 

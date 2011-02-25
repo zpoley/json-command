@@ -1,11 +1,11 @@
-{ "name": "json-command"
+{ "name": "json"
 , "version": "0.0.6"
 , "engines": [ "node >=0.2.0" ]
 , "description": "JSON command line processing toolkit."
 , "author": "Zachary Poley <zpoley@gmail.com> (http://zpoley.net)"
 , "contributors": [ "Isaac Schlueter <i@izs.me> (http://blog.izs.me)" ]
 , "keywords" : [ "json", "command", "shell" ]
-, "man" : "./man/json-command.1"
+, "man" : "./man/json.1"
 , "repository":
   { "type" : "git"
   , "url" : "https://github.com/zpoley/json-command.git"
