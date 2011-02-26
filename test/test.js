@@ -9,9 +9,14 @@ var testObj = {
     id : 1310571,
     name : "foo"
   },
-  arr : [
+  arr1 : [
     'a', 'b', 'c'
   ],
+  obj1 : {
+    arr2 : [ 
+      'd', 'e', 'f'
+    ]
+  },
   created_at : 127817599
 };
 
@@ -104,9 +109,9 @@ function printTestName(testName) {
     printTestName("testProcessKeys");
 
     var jsonC = new JSON.Command();
-    jsonC.processArgs([ "user.name", "text", "arr[1]" ]);
-    assert.equal(jsonC.keys.length, 3,
-      "processedKeys keys length == 3");
+    jsonC.processArgs([ "user.name", "text", "arr1[1]", "obj1.arr2[2]" ]);
+    assert.equal(jsonC.keys.length, 4,
+      "processedKeys keys length == 4");
 
     var resObj = jsonC.processKeys(testObj);
 
@@ -120,8 +125,10 @@ function printTestName(testName) {
       "processKeys result object created_at is undefined is true");
     assert.equal(resObj.user.id, undefined,
       "processKeys result object user.id is undefined is true");
-    assert.equal(resObj.arr[0], testObj.arr[1],
-      "processKeys result object arr[0] = testObj.arr[0] is true");
+    assert.equal(resObj.arr1[0], testObj.arr1[1],
+      "processKeys result object arr1[0] = testObj.arr1[0] is true");
+    assert.equal(resObj.obj1.arr2[0], testObj.obj1.arr2[2],
+      "processKeys result object obj1.arr2[0] = testObj.obj1.arr2[2] is true");
 
   })();
 
