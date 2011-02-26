@@ -52,6 +52,8 @@ please note that the last two examples require you to enter your username and pa
 
     -h                    print help info and exit
 
+    -v (-V | --version)   print version number and exit
+
     -u                    print ugly json output, each object on a single line
 
     -d                    print debugging output including exception messages
