@@ -17,7 +17,8 @@ var testObj = {
       'd', 'e', 'f'
     ]
   },
-  created_at : 127817599
+  created_at : 127817599,
+  zero : 0
 };
 
 function printTestName(testName) {
@@ -49,6 +50,13 @@ function printTestName(testName) {
 
     assert.equal(testObj.newKey, null,
       "createRequestedKeys adds requested key to object");
+
+    jsonC = new JSON.Command();
+    jsonC.processArgs([ "zero" ]);
+    jsonC.createRequestedKeys(testObj);
+
+    assert.equal(testObj.zero, 0,
+      "createRequestedKeys does not add null for 0 to object");
   })();
 
   (function testCheckConditionals() {
