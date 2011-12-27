@@ -62,6 +62,8 @@ please note that the last two examples require you to enter your username and pa
 
     new.key=old_key       move old_key to new.key in output object
 
+    -a                    input object is an array, process each element separately
+
     -c "js conditional"   js conditional to be run in the context of each object that determines whether an object is printed
 
     -C                    print the output fields as tab delimited columns in the order specified by fields
@@ -86,6 +88,7 @@ like -e and foo=bar allow for transforming object structure.
     e.g. { obj1 : body }{ obj2 : body }
 * file separated json objects. 
     e.g. cat files/* | json
+* when using -a, a single JSON array
 
 ## Order of operations
 
