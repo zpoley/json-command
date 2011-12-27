@@ -81,6 +81,8 @@ any number of fields can be specified to be printed from each json object.
 by default the structure of the original json object is maintained, however options
 like -e and foo=bar allow for transforming object structure.
 
+To remove a certain key, assign it to undefined.
+
 ## Standard Input Formats
 
 * line delimited json objects
