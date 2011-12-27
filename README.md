@@ -13,7 +13,7 @@ transforming the parsed json objects.
 
 json-command has been renamed to json in npm. all updates will be made to the json npm package.
 
-you need node v0.2.0 or higher and npm to run this program.
+you need node v0.4.0 or higher and npm to run this program.
 
 ## Installation
 
