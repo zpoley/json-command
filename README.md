@@ -13,7 +13,7 @@ transforming the parsed json objects.
 
 json-command has been renamed to json in npm. all updates will be made to the json npm package.
 
-you need node v0.2.0 or higher and npm to run this program.
+you need node v0.4.0 or higher and npm to run this program.
 
 ## Installation
 
@@ -62,6 +62,8 @@ please note that the last two examples require you to enter your username and pa
 
     new.key=old_key       move old_key to new.key in output object
 
+    -a                    input object is an array, process each element separately
+
     -c "js conditional"   js conditional to be run in the context of each object that determines whether an object is printed
 
     -C                    print the output fields as tab delimited columns in the order specified by fields
@@ -79,6 +81,8 @@ any number of fields can be specified to be printed from each json object.
 by default the structure of the original json object is maintained, however options
 like -e and foo=bar allow for transforming object structure.
 
+To remove a certain key, assign it to undefined.
+
 ## Standard Input Formats
 
 * line delimited json objects
@@ -86,6 +90,7 @@ like -e and foo=bar allow for transforming object structure.
     e.g. { obj1 : body }{ obj2 : body }
 * file separated json objects. 
     e.g. cat files/* | json
+* when using -a, a single JSON array
 
 ## Order of operations
 
