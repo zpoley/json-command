@@ -30,19 +30,19 @@ please note that the last two examples require you to enter your username and pa
 
     curl http://search.twitter.com/search.json?q=node.js
 
-    curl http://search.twitter.com/search.json?q=node.js 2> /dev/null | json
+    curl -s http://search.twitter.com/search.json?q=node.js | json
 
-    curl http://search.twitter.com/search.json?q=node.js 2> /dev/null | json -o results
+    curl -s http://search.twitter.com/search.json?q=node.js | json -o results
 
-    curl http://search.twitter.com/search.json?q=node.js 2> /dev/null | json -o results from_user metadata
+    curl -s http://search.twitter.com/search.json?q=node.js | json -o results from_user metadata
 
-    curl http://search.twitter.com/search.json?q=node.js 2> /dev/null | json -o results new_id=id
+    curl -s http://search.twitter.com/search.json?q=node.js | json -o results new_id=id
 
-    curl http://search.twitter.com/search.json?q=node.js 2> /dev/null | json -o results -C from_user from_user_id
+    curl -s http://search.twitter.com/search.json?q=node.js | json -o results -C from_user from_user_id
 
-    curl http://stream.twitter.com/1/statuses/sample.json -uAnyTwitterUser:Password 2> /dev/null | json user.name user.id
+    curl -s http://stream.twitter.com/1/statuses/sample.json -uAnyTwitterUser:Password | json user.name user.id
 
-    curl http://stream.twitter.com/1/statuses/sample.json -uAnyTwitterUser:Password 2> /dev/null | json user.name user.id -c "entities.user_mentions.length > 0"
+    curl -s http://stream.twitter.com/1/statuses/sample.json -uAnyTwitterUser:Password | json user.name user.id -c "entities.user_mentions.length > 0"
 
 ## Synopsis
 
