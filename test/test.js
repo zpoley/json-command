@@ -1,4 +1,4 @@
-var sys = require("sys"),
+var util = require('util'),
     assert = require("assert"),
     jsonCommand = require("../lib/jsonCommand");
 
@@ -22,8 +22,8 @@ var testObj = {
 };
 
 function printTestName(testName) {
-  sys.puts("\nRunning " + testName + ":");
-  sys.puts("-----------------------------------------");
+  util.puts("\nRunning " + testName + ":");
+  util.puts("-----------------------------------------");
 }
 
 (function testSimpleSetup() {
@@ -142,4 +142,4 @@ function printTestName(testName) {
 
 })();
 
-sys.puts("\nAll tests passed!\n");
+util.puts("\nAll tests passed!\n");
