@@ -11,4 +11,7 @@
   , "url" : "https://github.com/zpoley/json-command.git"
   }
 , "bin" : { "json" : "./bin/json.js" }
+, "scripts":
+  { "test" : "node test/test.js"
+  }
 }

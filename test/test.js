@@ -56,6 +56,8 @@ function printTestName(testName) {
 
     assert.equal(testObj.zero, 0,
       "createRequestedKeys does not add null for 0 to object");
+
+    delete testObj.newKey;
   })();
 
   (function testCheckConditionals() {
@@ -67,7 +69,7 @@ function printTestName(testName) {
     assert.equal(jsonC.checkConditionals(testObj), false,
       "checkConditionals (name=='foo') is false");
 
-    var jsonC = new JSON.Command();
+    jsonC = new JSON.Command();
     jsonC.processArgs([ "-c", "(user.name == 'foo')"]);
 
     assert.equal(jsonC.checkConditionals(testObj), true,
@@ -136,6 +138,25 @@ function printTestName(testName) {
       "processKeys result object arr1[0] = testObj.arr1[0] is true");
     assert.equal(resObj.obj1.arr2[0], testObj.obj1.arr2[2],
       "processKeys result object obj1.arr2[0] = testObj.obj1.arr2[2] is true");
+
+  })();
+
+  (function testDiffFriendly() {
+    printTestName("testLeadingComma");
+
+    var jsonC = new JSON.Command();
+    jsonC.processArgs([ "-," ]);
+
+    assert.equal(jsonC.stringify(testObj),
+      '{ "id": 19375093\n, "text": "who knows"\n, "user":\n  { "id": 1310571\n  , "name": "foo"\n  }\n, "arr1":\n  [ "a"\n  , "b"\n  , "c"\n  ]\n, "obj1":\n  { "arr2":\n    [ "d"\n    , "e"\n    , "f"\n    ]\n  }\n, "created_at": 127817599\n, "zero": 0\n}',
+      "Leading-comma output selection works and formats test object correctly");
+
+    assert.equal(jsonC.stringify([[]]), "[ []\n]",
+      "Leading-comma output nests arrays correctly");
+
+    assert.equal(jsonC.stringify({"":[{"deep":{"null":null}}]}),
+      '{ "":\n  [ { "deep":\n      { "null": null\n      }\n    }\n  ]\n}',
+      "Leading-comma output nests deep object/array combinations correctly");
 
   })();
 
