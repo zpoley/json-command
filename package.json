@@ -1,5 +1,5 @@
 { "name": "json"
-, "version": "0.0.13"
+, "version": "0.0.14"
 , "engines": [ "node >=0.4.0" ]
 , "description": "JSON command line processing toolkit."
 , "author": "Zachary Poley <zpoley@gmail.com> (http://zpoley.net)"
