@@ -20,6 +20,18 @@ var testObj = {
   zero : 0
 };
 
+var testObjects = [
+  {
+    id : 19375093,
+    text : "strA"
+  },
+  {
+    id : 19375094,
+    text : "strB"
+  }
+];
+
+
 function printTestName(testName) {
   console.log("\nRunning " + testName + ":");
   console.log("-----------------------------------------");
@@ -159,6 +171,64 @@ function printTestName(testName) {
       "Leading-comma output nests deep object/array combinations correctly");
 
   })();
+
+  (function testJSONFormats() {
+    printTestName("testJSONFormats");
+
+
+    (function testBacktobackObjects() {
+      printTestName("testBacktobackObjects");
+
+      var jsonC = new JSON.Command();
+      jsonC.processArgs([ "-," ]);
+
+      var testInput = "";
+      for (var i = 0; i < testObjects.length; i++) {
+        testInput += (JSON.stringify(testObjects[i]));
+      }
+ 
+      console.log(" what?:\n" + testInput );
+
+      jsonC.processChunk(testInput);
+      var rawObjects = jsonC.createObjects();
+      console.log("processChunk objects:\n" + JSON.stringify(rawObjects, null, 2));
+      rawObjects = rawObjects.concat(jsonC.createObjects())
+      console.log("processChunk objects:\n" + JSON.stringify(rawObjects, null, 2));
+      preparedObjects = jsonC.prepareFinalObjects(rawObjects);
+      console.log("prepared objects:\n" + JSON.stringify(preparedObjects, null, 2));
+       
+     // assert.equal(jsonC.stringify(testObj),
+     //   '{ "id": 19375093\n, "text": "who knows"\n, "user":\n  { "id": 1310571\n  , "name": "foo"\n  }\n, "arr1":\n  [ "a"\n  , "b"\n  , "c"\n  ]\n, "obj1":\n  { "arr2":\n    [ "d"\n    , "e"\n    , "f"\n    ]\n  }\n, "created_at": 127817599\n, "zero": 0\n}',
+     //   "Leading-comma output selection works and formats test object correctly");
+
+    })();
+
+
+
+    (function testNewLinesBetweenObjects() {
+      printTestName("testNewlinesBetweenObjects");
+
+      var jsonC = new JSON.Command();
+      jsonC.processArgs([ "-," ]);
+
+      var testInput = "";
+      for (var i = 0; i < testObjects.length; i++) {
+        testInput += (JSON.stringify(testObjects[i], null, 2) + "\n");
+      }
+ 
+      console.log(" what?:\n" + testInput );
+
+      var objects = jsonC.processChunk(testInput);
+
+      console.log("processChunk objects:\n" + JSON.stringify(objects, null, 2));
+ 
+     // assert.equal(jsonC.stringify(testObj),
+     //   '{ "id": 19375093\n, "text": "who knows"\n, "user":\n  { "id": 1310571\n  , "name": "foo"\n  }\n, "arr1":\n  [ "a"\n  , "b"\n  , "c"\n  ]\n, "obj1":\n  { "arr2":\n    [ "d"\n    , "e"\n    , "f"\n    ]\n  }\n, "created_at": 127817599\n, "zero": 0\n}',
+     //   "Leading-comma output selection works and formats test object correctly");
+
+    })();
+
+  })(); 
 
 })();
 
