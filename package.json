@@ -1,5 +1,6 @@
-{ "name": "json"
+{ "name": "json-command"
 , "version": "0.0.14"
+, "license": "MIT"
 , "engines": [ "node >=0.4.0" ]
 , "description": "JSON command line processing toolkit."
 , "author": "Zachary Poley <zpoley@gmail.com> (http://zpoley.net)"
