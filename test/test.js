@@ -192,7 +192,7 @@ function printTestName(testName) {
       jsonC.processChunk(testInput);
       var rawObjects = jsonC.createObjects();
       console.log("processChunk objects:\n" + JSON.stringify(rawObjects, null, 2));
-      rawObjects = rawObjects.concat(jsonC.createObjects())
+      rawObjects = rawObjects.concat(jsonC.createObjects());
       console.log("processChunk objects:\n" + JSON.stringify(rawObjects, null, 2));
       preparedObjects = jsonC.prepareFinalObjects(rawObjects);
       console.log("prepared objects:\n" + JSON.stringify(preparedObjects, null, 2));

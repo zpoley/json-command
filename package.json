@@ -1,9 +1,9 @@
 { "name": "json-command"
-, "version": "0.0.14"
+, "version": "0.0.15"
 , "license": "MIT"
 , "engines": [ "node >=0.4.0" ]
 , "description": "JSON command line processing toolkit."
-, "author": "Zachary Poley <zpoley@gmail.com> (http://zpoley.net)"
+, "author": "Zachary Poley <zpoley@gmail.com>"
 , "contributors": [ "Isaac Schlueter <i@izs.me> (http://blog.izs.me)", "Andrey Tarantsov <andreyvit@gmail.com> (http://www.tarantsov.com/)", "Niek Schmoller <niek.schmoller@helderberg.nl> (http://helderberg.nl)", "Ryunosuke SATO (http://d.hatena.ne.jp/tricknotes/)", "Johan Sundström (http://ecmanaut.blogspot.com/)" ]
 , "keywords" : [ "json", "command", "shell" ]
 , "man" : "./man/json.1"
@@ -11,8 +11,23 @@
   { "type" : "git"
   , "url" : "https://github.com/zpoley/json-command.git"
   }
-, "bin" : { "json" : "./bin/json.js" }
+, "bin" : { "json" : "./dist/src/bin/json.js" }
 , "scripts":
-  { "test" : "node test/test.js"
+  { "test" : "node ./dist/test/json-command.js"
+  }
+, "depedencies":
+  {}
+, "devDependencies":
+  { "grunt" : "*"
+  , "grunt-contrib-coffee" : "*" 
+  , "grunt-contrib-jshint" : "*" 
+  , "grunt-contrib-watch" : "*" 
+  , "grunt-contrib-copy" : "*" 
+  , "grunt-mocha-test" : "*"
+  , "mocha" : "*"
+  , "should" : "*"
+  , "grunt-coffeelint" : "*" 
+  , "coffeelint" : "*" 
+  , "coffee-script": "*"
   }
 }
