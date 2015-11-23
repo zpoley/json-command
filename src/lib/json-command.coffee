@@ -21,6 +21,8 @@ JSON.Command = (args) ->
   @inputIsArray = false
   @conditionals = []
   @executables = []
+  @firstBuffer = true
+  @foundArray = null
   @stdin = null
   @buffer = ''
   if args
@@ -28,48 +30,54 @@ JSON.Command = (args) ->
   return
 
 JSON.Command::printhelp = ->
-  console.log 'usage: stdout_generator | json [options] [fields]'
-  console.log ''
-  console.log 'json processes standard input and parses json objects.'
-  console.log 'json currently handles a few different standard input formats'
-  console.log 'and provides a number of options tailored toward inspecting and'
-  console.log 'transforming the parsed json objects.'
-  console.log ''
-  console.log 'options:\n'
-  console.log '  -h                    print this help info and exit\n'
-  console.log '  -v (-V | --version)   print version number and exit\n'
-  console.log '  -u                    print ugly json output, each object on a'
-  console.log '                        single line\n'
-  console.log '  -,                    print leading-comma diff-friendly output'
-  console.log '                        with one line per property\n'
-  console.log '  -d                    print debugging output including'
-  console.log '                        exception messages\n'
-  console.log '  -o object.path        specify the path to an array to be'
-  console.log '                        iterated on\n'
-  console.log '  new.key=old_key       move old_key to new.key in output\n'
-  console.log '  -a                    input object is an array,'
-  console.log '                        process each element separately\n'
-  console.log '  -c "js conditional"   js conditional to be run in the context'
-  console.log '                        of each object that determines whether'
-  console.log '                        an object is printed\n'
-  console.log '  -C                    print the output fields as tab delimited'
-  console.log '                        columns in order provided\n'
-  console.log '  -e "js expression"    execute arbitrary js in the context of'
-  console.log '                        each object.\n'
-  console.log '  -i                    use node\'s util.inspect instead of'
-  console.log '                        JSON.stringify\n'
-  console.log '  -H                    print headers, if they are supplied.'
-  console.log '                        Useful for output from curl -i.\n'
-  console.log 'examples:\n'
-  console.log '  curl https://api.github.com/meta 2> /dev/null'
-  console.log '   | json importer\n'
-  console.log '  curl http://api.github.com/meta 2> /dev/null'
-  console.log '   | json new_importer=importer\n'
-  console.log '  curl http://api.github.com/meta 2> /dev/null'
-  console.log '   | json -o results -C from_user from_user_id text\n'
-  console.log 'more help:\n'
-  console.log '  use "man json" or visit http://github.com/zpoley/json-command'
-  console.log ''
+  content = [
+    'usage: stdout_generator | json [options] [fields]',
+    '',
+    'json processes standard input and parses json objects.',
+    'json currently handles a few different standard input formats',
+    'and provides a number of options tailored toward inspecting and',
+    'transforming parsed json objects.',
+    '',
+    'options:\n',
+    '  -h                    print this help info and exit\n',
+    '  -v (-V | --version)   print version number and exit\n',
+    '  -u                    print ugly json output, each object on a',
+    '                        single line\n',
+    '  -,                    print leading-comma diff-friendly output',
+    '                        with one line per property\n',
+    '  -d                    print debugging output including',
+    '                        exception messages\n',
+    '  -o object.path        specify the path to an array to be',
+    '                        iterated on\n',
+    '  new.key=old_key       move old_key to new.key in output\n',
+    '  -a                    input object is an array,',
+    '                        process each element separately\n',
+    '  -c "js conditional"   js conditional to be run in the context',
+    '                        of each object that determines whether',
+    '                        an object is printed\n',
+    '  -C                    print the output fields as tab delimited',
+    '                        columns in order provided\n',
+    '  -e "js expression"    execute arbitrary js in the context of',
+    '                        each object.\n',
+    '  -i                    use node\'s util.inspect instead of',
+    '                        JSON.stringify\n',
+    '  -H                    print headers, if they are supplied.',
+    '                        Useful for output from curl -i.\n',
+    'examples:\n',
+    ('  curl https://raw.githubusercontent.com' +
+      '/zpoley/json-command/feature-test/src/data/object.json 2> /dev/null \\'),
+    '   | json name\n',
+    ('  curl https://raw.githubusercontent.com' +
+      '/zpoley/json-command/feature-test/src/data/object.json 2> /dev/null \\'),
+    '   | json new_name=name\n',
+    ('  curl https://raw.githubusercontent.com' +
+      '/zpoley/json-command/feature-test/src/data/object.json 2> /dev/null \\'),
+    '   | json -o locations -C name\n',
+    'more help:\n',
+    '  use "man json" or visit http://github.com/zpoley/json-command',
+    '',
+  ]
+  console.log(content.join("\n"))
   process.exit()
   return
 
@@ -479,7 +487,17 @@ JSON.Command::processInput = ->
 ###
 
 JSON.Command::processChunk = (chunk) ->
+  if @firstBuffer
+    firstChunk = chunk.trim()
+    if firstChunk.match(/^\[/)
+      chunk = firstChunk.replace(/^\[/,"")
+      @foundArray = true
+    else
+      @foundArray = false
+    @firstBuffer = false
+
   @buffer += chunk.replace(/\r/g, "").replace(/\n/g, "")
+
   if @inputIsArray
     return
   return
@@ -491,9 +509,23 @@ JSON.Command::processChunk = (chunk) ->
 JSON.Command::parseObjects = ->
 
   objects = null
+  res = null
+  foundEnd = false
 
-  if (@buffer.match(/\n/g) or @buffer.match(/\r\n/g) or
-  @buffer.match(/\0/g) or @buffer.match('}{'))
+  try
+    res = JSON.parse(@buffer)
+  catch ex
+    # no-op
+
+  if (res or @buffer.match(/\n/g) or @buffer.match(/\r\n/g) or
+  @buffer.match(/\0$/) or @buffer.match('}{') or @buffer.match(/\}\s*\,\s*\{/))
+
+    if @buffer.match(/\0$/)
+      foundEnd = true
+      if @foundArray
+        @buffer = @buffer.replace(/\]\0$/, "")
+      else
+        @buffer = @buffer.replace(/\0$/, "")
 
     if @buffer.match(/\n/g)
       objects = @buffer.split("\n")
@@ -501,13 +533,20 @@ JSON.Command::parseObjects = ->
     if @buffer.match(/\r\n/g)
       objects = @buffer.split("\r\n")
 
-    if @buffer.match(/\0/g)
-      objects = @buffer.split("\0")
-
     if @buffer.match("}{")
       objects = @buffer.split("}{").join("}\n{").split("\n")
 
-    @buffer = objects.pop()
+    if @buffer.match(/\}\s*\,\s*\{/)
+      objects = @buffer.split(/\}\s*\,\s*\{/).join("}\n{").split("\n")
+
+    if res and (!objects or (objects.length == 0))
+      if Array.isArray(res)
+        objects = JSON.stringify(res)
+      else
+        objects = [ JSON.stringify(res) ]
+   
+    if !foundEnd
+      @buffer = objects.pop()
 
     if @headerPassthrough
       i = 0
@@ -519,10 +558,5 @@ JSON.Command::parseObjects = ->
           break
         i++
       objects.splice 0, i
-  if objects == null or !objects.length
-    try
-      if res = JSON.parse(@buffer)
-        objects = [ JSON.stringify(res) ]
-    catch ex
-    # no-op
+
   objects

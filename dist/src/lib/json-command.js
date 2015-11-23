@@ -25,6 +25,8 @@ JSON.Command = function(args) {
   this.inputIsArray = false;
   this.conditionals = [];
   this.executables = [];
+  this.firstBuffer = true;
+  this.foundArray = null;
   this.stdin = null;
   this.buffer = '';
   if (args) {
@@ -33,48 +35,9 @@ JSON.Command = function(args) {
 };
 
 JSON.Command.prototype.printhelp = function() {
-  console.log('usage: stdout_generator | json [options] [fields]');
-  console.log('');
-  console.log('json processes standard input and parses json objects.');
-  console.log('json currently handles a few different standard input formats');
-  console.log('and provides a number of options tailored toward inspecting and');
-  console.log('transforming the parsed json objects.');
-  console.log('');
-  console.log('options:\n');
-  console.log('  -h                    print this help info and exit\n');
-  console.log('  -v (-V | --version)   print version number and exit\n');
-  console.log('  -u                    print ugly json output, each object on a');
-  console.log('                        single line\n');
-  console.log('  -,                    print leading-comma diff-friendly output');
-  console.log('                        with one line per property\n');
-  console.log('  -d                    print debugging output including');
-  console.log('                        exception messages\n');
-  console.log('  -o object.path        specify the path to an array to be');
-  console.log('                        iterated on\n');
-  console.log('  new.key=old_key       move old_key to new.key in output\n');
-  console.log('  -a                    input object is an array,');
-  console.log('                        process each element separately\n');
-  console.log('  -c "js conditional"   js conditional to be run in the context');
-  console.log('                        of each object that determines whether');
-  console.log('                        an object is printed\n');
-  console.log('  -C                    print the output fields as tab delimited');
-  console.log('                        columns in order provided\n');
-  console.log('  -e "js expression"    execute arbitrary js in the context of');
-  console.log('                        each object.\n');
-  console.log('  -i                    use node\'s util.inspect instead of');
-  console.log('                        JSON.stringify\n');
-  console.log('  -H                    print headers, if they are supplied.');
-  console.log('                        Useful for output from curl -i.\n');
-  console.log('examples:\n');
-  console.log('  curl https://api.github.com/meta 2> /dev/null');
-  console.log('   | json importer\n');
-  console.log('  curl http://api.github.com/meta 2> /dev/null');
-  console.log('   | json new_importer=importer\n');
-  console.log('  curl http://api.github.com/meta 2> /dev/null');
-  console.log('   | json -o results -C from_user from_user_id text\n');
-  console.log('more help:\n');
-  console.log('  use "man json" or visit http://github.com/zpoley/json-command');
-  console.log('');
+  var content;
+  content = ['usage: stdout_generator | json [options] [fields]', '', 'json processes standard input and parses json objects.', 'json currently handles a few different standard input formats', 'and provides a number of options tailored toward inspecting and', 'transforming parsed json objects.', '', 'options:\n', '  -h                    print this help info and exit\n', '  -v (-V | --version)   print version number and exit\n', '  -u                    print ugly json output, each object on a', '                        single line\n', '  -,                    print leading-comma diff-friendly output', '                        with one line per property\n', '  -d                    print debugging output including', '                        exception messages\n', '  -o object.path        specify the path to an array to be', '                        iterated on\n', '  new.key=old_key       move old_key to new.key in output\n', '  -a                    input object is an array,', '                        process each element separately\n', '  -c "js conditional"   js conditional to be run in the context', '                        of each object that determines whether', '                        an object is printed\n', '  -C                    print the output fields as tab delimited', '                        columns in order provided\n', '  -e "js expression"    execute arbitrary js in the context of', '                        each object.\n', '  -i                    use node\'s util.inspect instead of', '                        JSON.stringify\n', '  -H                    print headers, if they are supplied.', '                        Useful for output from curl -i.\n', 'examples:\n', '  curl https://raw.githubusercontent.com' + '/zpoley/json-command/feature-test/src/data/object.json 2> /dev/null \\', '   | json name\n', '  curl https://raw.githubusercontent.com' + '/zpoley/json-command/feature-test/src/data/object.json 2> /dev/null \\', '   | json new_name=name\n', '  curl https://raw.githubusercontent.com' + '/zpoley/json-command/feature-test/src/data/object.json 2> /dev/null \\', '   | json -o locations -C name\n', 'more help:\n', '  use "man json" or visit http://github.com/zpoley/json-command', ''];
+  console.log(content.join("\n"));
   process.exit();
 };
 
@@ -529,6 +492,17 @@ JSON.Command.prototype.processInput = function() {
  */
 
 JSON.Command.prototype.processChunk = function(chunk) {
+  var firstChunk;
+  if (this.firstBuffer) {
+    firstChunk = chunk.trim();
+    if (firstChunk.match(/^\[/)) {
+      chunk = firstChunk.replace(/^\[/, "");
+      this.foundArray = true;
+    } else {
+      this.foundArray = false;
+    }
+    this.firstBuffer = false;
+  }
   this.buffer += chunk.replace(/\r/g, "").replace(/\n/g, "");
   if (this.inputIsArray) {
     return;
@@ -541,22 +515,46 @@ JSON.Command.prototype.processChunk = function(chunk) {
  */
 
 JSON.Command.prototype.parseObjects = function() {
-  var ex, i, l, objects, res;
+  var ex, foundEnd, i, l, objects, res;
   objects = null;
-  if (this.buffer.match(/\n/g) || this.buffer.match(/\r\n/g) || this.buffer.match(/\0/g) || this.buffer.match('}{')) {
+  res = null;
+  foundEnd = false;
+  try {
+    res = JSON.parse(this.buffer);
+  } catch (_error) {
+    ex = _error;
+  }
+  if (res || this.buffer.match(/\n/g) || this.buffer.match(/\r\n/g) || this.buffer.match(/\0$/) || this.buffer.match('}{') || this.buffer.match(/\}\s*\,\s*\{/)) {
+    if (this.buffer.match(/\0$/)) {
+      foundEnd = true;
+      if (this.foundArray) {
+        this.buffer = this.buffer.replace(/\]\0$/, "");
+      } else {
+        this.buffer = this.buffer.replace(/\0$/, "");
+      }
+    }
     if (this.buffer.match(/\n/g)) {
       objects = this.buffer.split("\n");
     }
     if (this.buffer.match(/\r\n/g)) {
       objects = this.buffer.split("\r\n");
     }
-    if (this.buffer.match(/\0/g)) {
-      objects = this.buffer.split("\0");
-    }
     if (this.buffer.match("}{")) {
       objects = this.buffer.split("}{").join("}\n{").split("\n");
     }
-    this.buffer = objects.pop();
+    if (this.buffer.match(/\}\s*\,\s*\{/)) {
+      objects = this.buffer.split(/\}\s*\,\s*\{/).join("}\n{").split("\n");
+    }
+    if (res && (!objects || (objects.length === 0))) {
+      if (Array.isArray(res)) {
+        objects = JSON.stringify(res);
+      } else {
+        objects = [JSON.stringify(res)];
+      }
+    }
+    if (!foundEnd) {
+      this.buffer = objects.pop();
+    }
     if (this.headerPassthrough) {
       i = 0;
       l = objects.length;
@@ -569,15 +567,6 @@ JSON.Command.prototype.parseObjects = function() {
         i++;
       }
       objects.splice(0, i);
-    }
-  }
-  if (objects === null || !objects.length) {
-    try {
-      if (res = JSON.parse(this.buffer)) {
-        objects = [JSON.stringify(res)];
-      }
-    } catch (_error) {
-      ex = _error;
     }
   }
   return objects;

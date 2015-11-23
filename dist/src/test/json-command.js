@@ -189,6 +189,7 @@ describe("test JSON formats:", function() {
       testInput += JSON.stringify(testObjects[i]);
       i++;
     }
+    testInput += "\0";
     jsonC.processChunk(testInput);
     rawObjects = jsonC.createObjects();
     rawObjects = rawObjects.concat(jsonC.createObjects());
@@ -198,7 +199,7 @@ describe("test JSON formats:", function() {
       return rawObjects[1].should.equal(JSON.stringify(testObjects[1]));
     });
   });
-  return describe("test new lines between objects:", function() {
+  describe("test new lines between objects:", function() {
     var i, jsonC, preparedObjects, rawObjects, testInput;
     jsonC = new JSON.Command;
     jsonC.processArgs(['-,']);
@@ -208,13 +209,32 @@ describe("test JSON formats:", function() {
       testInput += JSON.stringify(testObjects[i], null, 0) + '\n';
       i++;
     }
+    testInput += "\0";
     jsonC.processChunk(testInput);
     rawObjects = jsonC.createObjects();
     rawObjects = rawObjects.concat(jsonC.createObjects());
+    console.log("rawObjects: " + (JSON.stringify(rawObjects)));
     preparedObjects = jsonC.prepareFinalObjects(rawObjects);
     return it("testObjects should be produced", function() {
       rawObjects[0].should.equal(JSON.stringify(testObjects[0]));
       return rawObjects[1].should.equal(JSON.stringify(testObjects[1]));
+    });
+  });
+  return describe("test array input object:", function() {
+    var jsonC, preparedObjects, rawObjects, testInput;
+    jsonC = new JSON.Command;
+    jsonC.processArgs(['-a']);
+    testInput = JSON.stringify(testObjects, null, 2);
+    testInput += "\0";
+    jsonC.processChunk(testInput);
+    rawObjects = jsonC.createObjects();
+    rawObjects = rawObjects.concat(jsonC.createObjects());
+    console.log("raw objects: " + (JSON.stringify(rawObjects, null, 2)));
+    preparedObjects = jsonC.prepareFinalObjects(rawObjects);
+    console.log("prepd objects: " + (JSON.stringify(preparedObjects, null, 2)));
+    return it("testObjects should be produced", function() {
+      JSON.stringify(JSON.parse(rawObjects[0])).should.equal(JSON.stringify(testObjects[0]));
+      return JSON.stringify(JSON.parse(rawObjects[1])).should.equal(JSON.stringify(testObjects[1]));
     });
   });
 });

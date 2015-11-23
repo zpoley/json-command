@@ -22,14 +22,11 @@ testObj =
   zero: 0
 
 testObjects = [
-  {
-    id: 19375093
-    text: 'strA'
-  }
-  {
-    id: 19375094
-    text: 'strB'
-  }
+  id: 19375093
+  text: 'strA'
+,
+  id: 19375094
+  text: 'strB'
 ]
 
 
@@ -194,6 +191,7 @@ describe "test JSON formats:", ->
     while i < testObjects.length
       testInput += JSON.stringify(testObjects[i])
       i++
+    testInput += "\0"
 
     jsonC.processChunk testInput
 
@@ -214,13 +212,40 @@ describe "test JSON formats:", ->
     while i < testObjects.length
       testInput += JSON.stringify(testObjects[i], null, 0) + '\n'
       i++
+    testInput += "\0"
 
     jsonC.processChunk testInput
 
     rawObjects = jsonC.createObjects()
     rawObjects = rawObjects.concat(jsonC.createObjects())
+    console.log "rawObjects: #{JSON.stringify(rawObjects)}"
     preparedObjects = jsonC.prepareFinalObjects(rawObjects)
 
     it "testObjects should be produced", ->
       rawObjects[0].should.equal(JSON.stringify(testObjects[0]))
       rawObjects[1].should.equal(JSON.stringify(testObjects[1]))
+
+  describe "test array input object:", ->
+    jsonC = new (JSON.Command)
+    jsonC.processArgs [
+      '-a'
+    ]
+
+    testInput = JSON.stringify(testObjects, null, 2)
+    testInput += "\0"
+
+    jsonC.processChunk testInput
+
+    rawObjects = jsonC.createObjects()
+    rawObjects = rawObjects.concat(jsonC.createObjects())
+
+    console.log "raw objects: #{JSON.stringify(rawObjects, null, 2)}"
+    preparedObjects = jsonC.prepareFinalObjects(rawObjects)
+    console.log "prepd objects: #{JSON.stringify(preparedObjects, null, 2)}"
+
+    it "testObjects should be produced", ->
+      JSON.stringify(JSON.parse(rawObjects[0])).
+        should.equal(JSON.stringify(testObjects[0]))
+      JSON.stringify(JSON.parse(rawObjects[1])).
+        should.equal(JSON.stringify(testObjects[1]))
+
